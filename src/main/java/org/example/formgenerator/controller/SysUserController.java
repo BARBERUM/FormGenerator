@@ -35,7 +35,7 @@ public class SysUserController {
         return R.success("成功更新用户信息。");
     }
 
-    @DeleteMapping("user/{userId}")
+    @DeleteMapping("/user/{userId}")
     public R<?> deleteUser(@PathVariable ("userId") Long userId)
     {
         sysUserService.deleteSysUser(userId);

@@ -8,6 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +32,22 @@ public class GlobalExceptionHandler {
             errors.put(fieldName,errorMsg);
         });
         return R.error(401, "参数校验异常", errors);
+    }
+
+    @ExceptionHandler(IOException.class)
+    public R<?> ioeException(IOException e)
+    {
+        return R.failure("文件读取失败：" + e.getMessage());
+    }
+    @ExceptionHandler(RuntimeException .class)
+    public R<?> runTimeException(RuntimeException  e)
+    {
+        return R.failure("Excel导入失败：" + e.getMessage());
+    }
+    @ExceptionHandler(Exception.class)
+    public R<?> exception(Exception e)
+    {
+        return R.failure("系统异常：" + e.getMessage());
     }
 }
 

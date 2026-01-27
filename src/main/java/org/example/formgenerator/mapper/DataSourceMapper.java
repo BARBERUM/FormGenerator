@@ -1,6 +1,8 @@
 package org.example.formgenerator.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 import org.example.formgenerator.entity.DataSource;
 
 /**
@@ -12,5 +14,4 @@ import org.example.formgenerator.entity.DataSource;
  * @since 2026-01-22
  */
 public interface DataSourceMapper extends BaseMapper<DataSource> {
-
-}
+    }

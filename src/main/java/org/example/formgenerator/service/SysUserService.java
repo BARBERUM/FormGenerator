@@ -48,7 +48,7 @@ public class SysUserService {
     }
 
 
-    public SysUser login(String userName, String userPassword)
+    public SysUser login(String userName, String userPassword)throws ApiException
     {
 
         SysUser sysUser = sysUserMapper.findUserByName(userName);
