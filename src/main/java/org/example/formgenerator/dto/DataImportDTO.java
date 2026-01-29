@@ -1,11 +1,11 @@
-package org.example.formgenerator.vo;
+package org.example.formgenerator.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 @Data
-public class ImportExcelDTO {
+public class DataImportDTO {
 
     @NotBlank(message = "数据库名称不能为空")
     private String sourceName;

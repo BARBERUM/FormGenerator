@@ -52,6 +52,8 @@ public class FormData implements Serializable {
      */
     private Long sourceDataId;
 
+    private Long logicalDataRow;
+
     private LocalDateTime createTime;
 
     private Byte isDeleted;

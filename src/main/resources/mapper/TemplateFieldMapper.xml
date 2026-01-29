@@ -2,4 +2,28 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.example.formgenerator.mapper.TemplateFieldMapper">
 
+    <!-- 批量插入模板字段 -->
+    <insert id="batchInsert">
+        INSERT INTO template_field (
+        template_id, field_code, field_name, field_type, field_order,
+        default_value, create_time, update_time, is_deleted
+        ) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.templateId}, #{item.fieldCode}, #{item.fieldName}, #{item.fieldType}, #{item.fieldOrder},
+            #{item.defaultValue}, NOW(), NOW(), 0
+            )
+        </foreach>
+    </insert>
+
+    <!-- 根据模板ID查询字段列表 -->
+    <select id="selectByTemplateId" resultType="org.example.formgenerator.entity.TemplateField">
+        SELECT id, template_id, field_code, field_name, field_type, field_order, default_value,
+        create_time, update_time, is_deleted
+        FROM template_field
+        WHERE template_id = #{templateId}
+        AND is_deleted = 0
+        ORDER BY field_order ASC
+    </select>
+
 </mapper>

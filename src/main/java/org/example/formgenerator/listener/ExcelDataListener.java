@@ -4,6 +4,8 @@ import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.mysql.cj.jdbc.CallableStatementWrapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.bcel.Const;
+import org.example.formgenerator.common.Constant;
 import org.example.formgenerator.entity.SourceData;
 import org.example.formgenerator.entity.SourceField;
 
@@ -36,7 +38,7 @@ public class ExcelDataListener extends AnalysisEventListener<Map<Integer,String>
     public void invokeHeadMap(Map<Integer, String> headMap, AnalysisContext context){
         log.info("解析到表头：{}",headMap);
         //判断数据排列方式，纵向先处理，横向先存储所有数据，然后在遍历时最后处理。
-        if(sourceType == 1)
+        if(sourceType == Constant.LAYOUT_TYPE_VERTICAL)
         {
             parseVerticalHead(headMap);
         }
@@ -46,7 +48,7 @@ public class ExcelDataListener extends AnalysisEventListener<Map<Integer,String>
     //解析行数据
     public void invoke(Map<Integer, String> dataMap, AnalysisContext context) {
         log.info("解析到行数据：{}", dataMap);
-        if(sourceType == 1)
+        if(sourceType == Constant.LAYOUT_TYPE_VERTICAL)
         {
             int rowIndex = context.readRowHolder().getRowIndex() -1;
             parseVerticalData(dataMap, rowIndex);
@@ -59,7 +61,7 @@ public class ExcelDataListener extends AnalysisEventListener<Map<Integer,String>
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
         //如果时横向排列，则解析第一列作为表头，再按列解析数据。
-        if(sourceType == 2){
+        if(sourceType == Constant.LAYOUT_TYPE_HORIZONTAL){
             parseHorizontalHeadAndData();
         }
 
@@ -85,9 +87,9 @@ public class ExcelDataListener extends AnalysisEventListener<Map<Integer,String>
             sourceField.setSourceId(sourceId);
             sourceField.setFieldCode(fieldCode);
             sourceField.setFieldName(fieldName);
-            sourceField.setFieldType("text");
+            sourceField.setFieldType(Constant.FIELD_TYPE_TEXT);
             sourceField.setFieldOrder(colIndex);
-            sourceField.setIsDeleted((byte)0);
+            sourceField.setIsDeleted(Constant.IS_DELETED_NO);
 
             sourceFieldList.add(sourceField);
         }
@@ -114,7 +116,7 @@ public class ExcelDataListener extends AnalysisEventListener<Map<Integer,String>
             sourceData.setColIndex(colIndex);
             sourceData.setFieldCode(fieldCode);
             sourceData.setDataValue(dataValue);
-            sourceData.setIsDeleted((byte)0);
+            sourceData.setIsDeleted(Constant.IS_DELETED_NO);
             sourceDataList.add(sourceData);
 
         }
@@ -147,9 +149,9 @@ public class ExcelDataListener extends AnalysisEventListener<Map<Integer,String>
             sourceField.setSourceId(sourceId);
             sourceField.setFieldCode(fieldCode);
             sourceField.setFieldName(fieldName);
-            sourceField.setFieldType("text");
+            sourceField.setFieldType(Constant.FIELD_TYPE_TEXT);
             sourceField.setFieldOrder(rowIndex);
-            sourceField.setIsDeleted((byte)0);
+            sourceField.setIsDeleted(Constant.IS_DELETED_NO);
             sourceFieldList.add(sourceField);
 
         }
@@ -190,7 +192,7 @@ public class ExcelDataListener extends AnalysisEventListener<Map<Integer,String>
                 sourceData.setColIndex(colIndex);
                 sourceData.setFieldCode(fieldCode);
                 sourceData.setDataValue(dataValue);
-                sourceData.setIsDeleted((byte) 0);
+                sourceData.setIsDeleted(Constant.IS_DELETED_NO);
                 sourceDataList.add(sourceData);
             }
         }

@@ -3,13 +3,11 @@ package org.example.formgenerator.controller;
 import jakarta.validation.Valid;
 import org.example.formgenerator.service.DataSourceService;
 import org.example.formgenerator.utils.R;
-import org.example.formgenerator.vo.ImportExcelDTO;
+import org.example.formgenerator.dto.DataImportDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -19,8 +17,8 @@ public class ExcelImportController {
     @Autowired
     private DataSourceService dataSourceService;
     @PostMapping("/import")
-    public R<?> importExcel(@Valid ImportExcelDTO importExcelDTO) throws IOException {
-        String result = dataSourceService.importExcelData(importExcelDTO);
+    public R<?> importExcel(@Valid DataImportDTO dataImportDTO) throws IOException {
+        String result = dataSourceService.importExcelData(dataImportDTO);
         return R.success(result);
 
     }

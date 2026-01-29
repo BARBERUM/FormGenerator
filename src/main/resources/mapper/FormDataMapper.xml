@@ -1,5 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.example.formgenerator.mapper.FormDataMapper">
-
+    <!-- 批量插入form_data核心SQL -->
+    <insert id="batchInsertFormData" parameterType="java.util.List">
+        INSERT INTO form_data (
+        form_id,
+        logical_data_row, <!-- 你新增的逻辑数据行字段 -->
+        field_code,
+        field_value,
+        source_data_id,
+        create_time,
+        is_deleted
+        ) VALUES
+        <!-- 遍历List<FormData>，批量生成VALUES子句 -->
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.formId},
+            #{item.logicalDataRow},
+            #{item.fieldCode},
+            #{item.fieldValue},
+            #{item.sourceDataId},
+            NOW(), <!-- 数据库自动生成当前时间，与你原有单条插入逻辑一致 -->
+            0 <!-- 未删除标识，固定值 -->
+            )
+        </foreach>
+    </insert>
 </mapper>

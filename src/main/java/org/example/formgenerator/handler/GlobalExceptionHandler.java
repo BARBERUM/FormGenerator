@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException .class)
     public R<?> runTimeException(RuntimeException  e)
     {
-        return R.failure("Excel导入失败：" + e.getMessage());
+        return R.failure("运行时异常：" + e.getMessage());
     }
     @ExceptionHandler(Exception.class)
     public R<?> exception(Exception e)

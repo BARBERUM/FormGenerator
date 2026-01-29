@@ -1,10 +1,7 @@
 package org.example.formgenerator.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 import org.example.formgenerator.entity.SourceData;
 
 import java.util.List;
@@ -28,4 +25,14 @@ public interface SourceDataMapper extends BaseMapper<SourceData> {
             "</foreach>" +
             "</script>")
     int batchInsertSourceData(@Param("list") List<SourceData> sourceDataList);
+    /**
+     * 通过sourceDataId（source_data主键）获取逻辑行号（已归一化的rowIndex）
+     * @param sourceDataId source_data表主键ID
+     * @return 逻辑行号（Integer，无有效数据返回null）
+     */
+    @Select("SELECT sd.row_index " +
+            "FROM source_data sd " +
+            "WHERE sd.id = #{sourceDataId} " +
+            "  AND sd.is_deleted = 0") // 过滤逻辑删除数据
+    Integer getLogicalRowIndexBySourceDataId(@Param("sourceDataId") Long sourceDataId);
 }

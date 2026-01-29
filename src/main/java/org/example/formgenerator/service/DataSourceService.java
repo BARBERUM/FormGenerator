@@ -10,10 +10,10 @@ import org.example.formgenerator.mapper.DataSourceMapper;
 import org.example.formgenerator.mapper.SourceDataMapper;
 import org.example.formgenerator.mapper.SourceFieldMapper;
 import org.example.formgenerator.utils.ApiException;
-import org.example.formgenerator.utils.R;
-import org.example.formgenerator.vo.ImportExcelDTO;
+import org.example.formgenerator.dto.DataImportDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
@@ -29,23 +29,24 @@ public class DataSourceService{
     @Autowired
     SourceFieldMapper sourceFieldMapper;
 
-    public String importExcelData(ImportExcelDTO importExcelDTO) throws ApiException, IOException {
-        String originalFilename = importExcelDTO.getFile().getOriginalFilename();
+    @Transactional(rollbackFor = Exception.class) // 事务控制，失败则回滚所有操作
+    public String importExcelData(DataImportDTO dataImportDTO) throws ApiException, IOException {
+        String originalFilename = dataImportDTO.getFile().getOriginalFilename();
         if(!StringUtils.hasText(originalFilename)||(!originalFilename.endsWith(".xlsx"))&&!originalFilename.endsWith(".xls")){
             throw new ApiException("请上传Excel格式文件（.xlsx/.xls）");
         }
 
         DataSource dataSource = new DataSource();
-        dataSource.setSourceName(importExcelDTO.getSourceName());
-        dataSource.setSourceType(importExcelDTO.getSourceType());
-        dataSource.setSourceDesc(importExcelDTO.getSourceDesc()==null?"":importExcelDTO.getSourceDesc());
+        dataSource.setSourceName(dataImportDTO.getSourceName());
+        dataSource.setSourceType(dataImportDTO.getSourceType());
+        dataSource.setSourceDesc(dataImportDTO.getSourceDesc()==null?"": dataImportDTO.getSourceDesc());
         dataSource.setDataCount(0);
         dataSource.setDataCount(0);
-        dataSource.setCreator(importExcelDTO.getCreator());
+        dataSource.setCreator(dataImportDTO.getCreator());
         dataSource.setIsDeleted((byte)0);
         Long sourceId = dataSource.getId();
-        ExcelDataListener listener = new ExcelDataListener(sourceId, importExcelDTO.getSourceType());
-        EasyExcel.read(importExcelDTO.getFile().getInputStream(), listener)
+        ExcelDataListener listener = new ExcelDataListener(sourceId, dataImportDTO.getSourceType());
+        EasyExcel.read(dataImportDTO.getFile().getInputStream(), listener)
                 .headRowNumber(1)
                 .sheet()
                 .doRead();
@@ -67,6 +68,6 @@ public class DataSourceService{
         dataSourceMapper.updateById(dataSource);
 
         log.info("Excel导入成功，数据源ID：{}，字段数：{}，数据条数：{}", sourceId, sourceFieldList.size(), dataCount);
-        return "导入成功！数据源ID：" + sourceId + "，共导入" + dataCount + "条数据";
+        return "导入成功！字段数"+sourceFieldList.size() +"数据源ID：" + sourceId + "，共导入" + dataCount + "条数据";
     }
 }
